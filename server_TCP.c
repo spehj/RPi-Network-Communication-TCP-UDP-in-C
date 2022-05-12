@@ -14,9 +14,8 @@
 
 #define PORT_NUMBER 55000
 // 1. First run:
-// raspivid -w 1280 -h 1024 -t 0 -o test.h264
-// 2. 
-// 
+// raspivid -w 1280 -h 1024 -t 0 -o video_test.h264
+
 
 
 int main( int argc, char **argv )//STREŽNIK - RASPBERRY
@@ -41,7 +40,7 @@ int main( int argc, char **argv )//STREŽNIK - RASPBERRY
     printf("Napaka: init server\n"); exit( 1 );
   }
 
-  if ((fd = open("videoTest.h264", O_RDONLY))  < 0){
+  if ((fd = open("video_test.h264", O_RDONLY))  < 0){
     printf("Napaka open fifo file.\n");
     exit(1);
   }
