@@ -1,6 +1,7 @@
 # RPi-Network-Communication-TCP-UDP-in-C
 Raspberry pi as TCP/UDP server and laptop as TCP/UDP client. We stream live video from RPi camera to a client.
 
+## TCP part
 Use
 ```console
 server_TCP.c
@@ -11,6 +12,7 @@ client_TCP.c
 ```
 on your laptop or other machine.
 
+### Steps to run TCP stream
 First run this command to make a fifo file.
 ```console
 mkfifo video_test.h264
