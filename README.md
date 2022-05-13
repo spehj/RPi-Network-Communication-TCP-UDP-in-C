@@ -34,13 +34,12 @@ mkfifo video
 
 Then:
 ```console
-./client_TCP
+gst-launch-1.0 -v filesrc location=video ! h264parse ! avdec_h264 ! autovideosink sync=false
 ```
 
 Then run:
-gst-launch-1.0 -v filesrc location=test.h264 ! h264parse ! avdec_h264
-! autovideosink sync=false
 ```console
-gst-launch-1.0 -v filesrc location=video ! h264parse ! avdec_h264 ! autovideosink sync=false
+./client_TCP
 ```
+
 You should see live TCP stream on your display.
