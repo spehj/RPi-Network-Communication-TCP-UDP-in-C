@@ -2,3 +2,7 @@
 client_TCP
 ./server_TCP
 server_TCP
+./client_UDP
+client_UDP
+./server_UDP
+server_UDP
