@@ -73,10 +73,10 @@ int main(int argc, char **argv)
     len = sizeof(cliaddr);
     while (1)
     {   
-         
+        printf("Waiting for packet...\n");
         recvfrom(sockfd, buffer_receive , BUFF_REC_SIZE, 0, (struct sockaddr *)&cliaddr,&len);
-        packet = read(fi, buffer, BUFFER_SIZE);
-        printf("Packet %d\n", packet);
+        packet = read(fi, buffer, MAXLINE);
+        printf("Packet: %d\n", packet);
         if (sendto(sockfd, buffer, packet, 0, (struct sockaddr*)&cliaddr, len) == -1)
             diep("sendto()");
         // while ((packet = read(fi, buffer, BUFFER_SIZE)) > 0)

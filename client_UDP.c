@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     int sockfd;
     struct sockaddr_in servaddr, cliaddr;
     // char sendline[ MAXLINE ], recvline[ MAXLINE ];
-    int s, slen = sizeof(cliaddr);
+    int s, slen = sizeof(servaddr);
     int fo;
     char *buffer;
     char *buffer_send;
@@ -84,8 +84,10 @@ int main(int argc, char **argv)
 
     while (1)
     {   
-        sendto(sockfd, buffer_send, BUFF_SIZE_SEND,0, (struct sockaddr *)&servaddr, slen );
-        if ((packet = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, &cliaddr, &slen)) == -1)
+        printf("Sending packet...\n");
+        sendto(sockfd, buffer_send, BUFF_SIZE_SEND,0, (struct sockaddr *)&servaddr, sizeof(servaddr) );
+        printf("Waiting for packet.... \n");
+        if ((packet = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, NULL, NULL)) == -1)
         {
             diep("recvfrom()");
             printf("Received packet from \nData: \n\n");
