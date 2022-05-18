@@ -15,7 +15,7 @@
 #define MAXLINE 4096
 #define SERVPORTNO 50000
 #define BUFFER_SIZE 1920 * 1080 * 3
-
+#define BUFF_SIZE_SEND 1
 void diep(char *s)
 {
     perror(s);
@@ -30,10 +30,12 @@ int main(int argc, char **argv)
     int s, slen = sizeof(cliaddr);
     int fo;
     char *buffer;
+    char *buffer_send;
     int packet;
     int fd;
 
     buffer = (char *)malloc(BUFFER_SIZE);
+    buffer_send = (char *)malloc(BUFF_SIZE_SEND);
 
     if (argc != 2)
     {
@@ -46,20 +48,20 @@ int main(int argc, char **argv)
         printf("Napaka open video.\n");
         exit(1);
     }
-    if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
         diep("socket");
 
-    // bzero(&servaddr, sizeof(servaddr));
-    memset((char *)&servaddr, 0, sizeof(servaddr));
+    bzero(&servaddr, sizeof(servaddr));
+    //memset((char *)&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(SERVPORTNO);
     // First argument is server IP
-    // servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    if (inet_aton(argv[1], &servaddr.sin_addr) == 0)
-    {
-        fprintf(stderr, "inet_aton() failed\n");
-        exit(1);
-    }
+    servaddr.sin_addr.s_addr = inet_addr(argv[1]);
+    // if (inet_aton(argv[1], &servaddr.sin_addr) == 0)
+    // {
+    //     fprintf(stderr, "inet_aton() failed\n");
+    //     exit(1);
+    // }
 
     // if (bind(s, &servaddr, sizeof(servaddr))==-1)
     //     diep("bind");
@@ -81,11 +83,18 @@ int main(int argc, char **argv)
     // }
 
     while (1)
-    {
-        if (recvfrom(s, buffer, BUFFER_SIZE, 0, &cliaddr, &slen) == -1)
+    {   
+        sendto(sockfd, buffer_send, BUFF_SIZE_SEND,0, (struct sockaddr *)&servaddr, slen );
+        if ((packet = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, &cliaddr, &slen)) == -1)
         {
             diep("recvfrom()");
             printf("Received packet from \nData: \n\n");
+        }
+
+        if (write(fo, buffer, packet) ==-1)
+        {
+            printf("write err\n");
+            exit(1);
         }
     }
 

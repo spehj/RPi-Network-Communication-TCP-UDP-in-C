@@ -6,3 +6,6 @@ server_TCP
 client_UDP
 ./server_UDP
 server_UDP
+video
+.video
+./video
