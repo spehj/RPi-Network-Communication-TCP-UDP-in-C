@@ -25,21 +25,19 @@ void diep(char *s)
 int main(int argc, char **argv)
 {
     int sockfd;
-    struct sockaddr_in servaddr, cliaddr;
-    // char sendline[ MAXLINE ], recvline[ MAXLINE ];
-    int s, slen = sizeof(servaddr);
+    struct sockaddr_in servaddr;
     int fo;
     char *buffer;
     char *buffer_send;
     int packet;
-    int fd;
+
 
     buffer = (char *)malloc(BUFFER_SIZE);
     buffer_send = (char *)malloc(BUFF_SIZE_SEND);
 
     if (argc != 2)
     {
-        printf("usage: udpcli <IP address>\n");
+        printf("usage: udpcli <IP SERVER address>\n");
         exit(1);
     }
 
@@ -52,80 +50,28 @@ int main(int argc, char **argv)
         diep("socket");
 
     bzero(&servaddr, sizeof(servaddr));
-    //memset((char *)&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(SERVPORTNO);
-    // First argument is server IP
     servaddr.sin_addr.s_addr = inet_addr(argv[1]);
-    // if (inet_aton(argv[1], &servaddr.sin_addr) == 0)
-    // {
-    //     fprintf(stderr, "inet_aton() failed\n");
-    //     exit(1);
-    // }
-
-    // if (bind(s, &servaddr, sizeof(servaddr))==-1)
-    //     diep("bind");
-
-    printf("Before packet.\n");
-
-    // packet = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, NULL, NULL);
-
-    // printf("Packet: %d\n", packet);
-
-    // while( (packet = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, NULL, NULL)) > 0)
-    // {
-    //     printf("pack fd: %d\n", packet);
-    //     if (write(fo, buffer, packet) < 0)
-    //     {
-    //         printf("napaka write\n");
-    //         exit(1);
-    //     }
-    // }
 
     while (1)
     {   
         printf("Sending packet...\n");
+        // Send first packet to server to get response
         sendto(sockfd, buffer_send, BUFF_SIZE_SEND,0, (struct sockaddr *)&servaddr, sizeof(servaddr) );
-        printf("Waiting for packet.... \n");
+        //printf("Waiting for packet.... \n");
+        // Receive packet from server
         if ((packet = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, NULL, NULL)) == -1)
         {
             diep("recvfrom()");
-            printf("Received packet from \nData: \n\n");
         }
-
+        printf("Received packet: %d", packet);
+        // Write received packet to FIFO
         if (write(fo, buffer, packet) ==-1)
         {
             printf("write err\n");
             exit(1);
         }
     }
-
-    //   while (fgets(&sendline[4], MAXLINE,stdin) != NULL){
-    //     memcpy(sendline,"c-> ", 4);
-    //     fputs(sendline,stdout);
-    //     n = sendto(sockfd,sendline,strlen(sendline),0,
-    //             (struct sockaddr *)&servaddr,sizeof(servaddr));
-    //     if( n == -1 ){
-    //       perror("sento err");
-    //       exit(1);
-    //     }
-    //     n=recvfrom(sockfd,recvline,MAXLINE,0,NULL,NULL);
-    //     if( n == -1 ){
-    //       perror("recvfrom err");
-    //       exit(1);
-    //     }
-    //     recvline[n]=0;
-    //     fputs(recvline,stdout);
-    //   }
-
-    // while ((packet = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, NULL, NULL)) > 0)
-    // {
-    //     printf("pack: %d\n", packet);
-    //     if (write(fo, buffer, packet) < 0)
-    //     {
-    //         printf("write err\n");
-    //         exit(1);
-    //     }
-    // }
     exit(0);
 }
