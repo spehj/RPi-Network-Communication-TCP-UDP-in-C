@@ -47,4 +47,4 @@ You should see live TCP stream on your display.
 
 ### Steps to run UDP stream
 
-Coming soon.
+Same as TCP. With UDP - first video and binary file on server then video and binary file on client side. Client has to send a short packet before receiving one with image bytes.
